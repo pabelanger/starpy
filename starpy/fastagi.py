@@ -103,8 +103,9 @@ class FastAGIProtocol(basic.LineOnlyReceiver):
         log.info("""Connection terminated""")
         try:
             for df in self.pendingMessages:
-                df.errback(tw_error.ConnectionDone(
-                        "FastAGI connection terminated"))
+                df.errback(
+                    tw_error.ConnectionDone("FastAGI connection terminated")
+                )
         finally:
             if self.lostConnectionDeferred:
                 self.lostConnectionDeferred.errback(reason)
@@ -236,9 +237,10 @@ class FastAGIProtocol(basic.LineOnlyReceiver):
                 if endpos == skipMS:
                     # "likely" an error according to the wiki,
                     # we'll raise an error...
-                    raise error.AGICommandFailure(FAILURE_CODE,
-                                "End position %s == original position, "
-                                "result code %s" % (endpos, digit))
+                    raise error.AGICommandFailure(
+                        FAILURE_CODE, "End position %s == original position, "
+                        "result code %s" % (endpos, digit)
+                    )
                 return digit, endpos
         raise ValueError("Unexpected result on streaming completion: %r" %
                          resultLine)
@@ -267,8 +269,9 @@ class FastAGIProtocol(basic.LineOnlyReceiver):
         sequence = InSequence()
         sequence.append(self.setContext, self.variables['agi_context'])
         sequence.append(self.setExtension, self.variables['agi_extension'])
-        sequence.append(self.setPriority, int(self.variables['agi_priority'])
-                                              + difference)
+        sequence.append(
+            self.setPriority, int(self.variables['agi_priority']) + difference
+        )
         sequence.append(self.finish)
         return sequence()
 
@@ -319,10 +322,8 @@ class FastAGIProtocol(basic.LineOnlyReceiver):
             self.checkFailure,
         ).addCallback(self.resultAsInt)
 
-    def controlStreamFile(
-            self, filename, escapeDigits,
-            skipMS=0, ffChar='*', rewChar='#', pauseChar=None,
-         ):
+    def controlStreamFile(self, filename, escapeDigits,
+                          skipMS=0, ffChar='*', rewChar='#', pauseChar=None):
         """Playback specified file with ability to be controlled by user
 
         filename -- filename to play (on the asterisk server)
@@ -610,8 +611,7 @@ class FastAGIProtocol(basic.LineOnlyReceiver):
 
     def recordFile(
             self, filename, format, escapeDigits, timeout=-1,
-            offsetSamples=None, beep=True, silence=None,
-        ):
+            offsetSamples=None, beep=True, silence=None):
         """Record channel to given filename until escapeDigits or silence
 
         filename -- filename on the server to which to save
